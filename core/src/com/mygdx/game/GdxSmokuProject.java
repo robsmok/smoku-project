@@ -37,22 +37,23 @@ public class GdxSmokuProject extends Game
         cheese = new BaseActor();
         cheese.setTexture( new Texture(Gdx.files.internal("cheese.png")) );
         cheese.setPosition( 400, 300 );
-        cheese.setOrigin( cheese.getWidth()/5, cheese.getHeight()/5 );
+        cheese.setOrigin( cheese.getWidth()/2, cheese.getHeight()/2 );
         mainStage.addActor( cheese );
         
         mousey = new AnimatedActor();
         
         TextureRegion[] frames = new TextureRegion[4];
+       
         for (int n = 0; n < 4; n++)
         {   
             String fileName = "mouse" + n + ".png";
             Texture tex = new Texture(Gdx.files.internal(fileName));
-            tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
             frames[n] = new TextureRegion( tex );
         }
-        Array<TextureRegion> framesArray = new Array<TextureRegion>(frames);
         
-        Animation anim = new Animation(0.1f, framesArray, Animation.PlayMode.LOOP_PINGPONG);
+        Array<TextureRegion> framesArray = new Array<TextureRegion>(frames);
+        Animation anim = new Animation(0.001f, framesArray, Animation.PlayMode.LOOP_PINGPONG);
 
         mousey.setAnimation( anim );
         mousey.setOrigin( mousey.getWidth()/2, mousey.getHeight()/2 );

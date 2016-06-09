@@ -23,6 +23,7 @@ public class AnimatedActor extends BaseActor
         anim = a;
     }
 
+    @Override
     public void act(float dt)
     {
         super.act( dt );
@@ -31,6 +32,7 @@ public class AnimatedActor extends BaseActor
             setRotation( MathUtils.atan2( velocityY, velocityX ) * MathUtils.radiansToDegrees );
     }
 
+    @Override
     public void draw(Batch batch, float parentAlpha) 
     {
         region.setRegion( anim.getKeyFrame(elapsedTime) );

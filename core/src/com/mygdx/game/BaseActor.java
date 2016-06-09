@@ -38,12 +38,15 @@ public class BaseActor extends Actor
         return boundary;
     }
 
+    @Override
     public void act(float dt)
     {
         super.act( dt );
         moveBy( velocityX * dt, velocityY * dt );
     }
     
+    
+    @Override
     public void draw(Batch batch, float parentAlpha) 
     {
         //super.draw( batch, parentAlpha ); // but.... this is empty, so can be deleted here...
