@@ -167,22 +167,19 @@ public class GdxSmokuProject extends Game
         // camera adjustment
         Camera cam = mainStage.getCamera();
 
+        
         // center camera on player
-        cam.position.set( 400,400, 0 );
+        cam.position.set( mousey.getX() + mousey.getOriginX(), 
+            mousey.getY() + mousey.getOriginY(), 0 );
 
-        
-        System.out.println(mousey.getX() + mousey.getOriginX());
-        System.out.println(mousey.getY() + mousey.getOriginY());
-        
-        
-        System.out.println(cam.position.x);
-        System.out.println(cam.position.y);
-        
-        
         // bound camera to layout
-     //   cam.position.x = MathUtils.clamp(cam.position.x, viewWidth/2,  mapWidth - viewWidth/2);
-     //   cam.position.y = MathUtils.clamp(cam.position.y, viewHeight/2, mapHeight - viewHeight/2);
-      //  cam.update();
+        cam.position.x = MathUtils.clamp(cam.position.x, viewWidth/2,  mapWidth - viewWidth/2);
+        cam.position.y = MathUtils.clamp(cam.position.y, viewHeight/2, mapHeight - viewHeight/2);
+        cam.update();
+
+        mainStage.draw();
+        uiStage.draw();
+
 
         mainStage.draw();
         uiStage.draw();
