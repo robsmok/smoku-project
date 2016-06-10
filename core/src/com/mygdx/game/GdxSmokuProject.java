@@ -174,6 +174,11 @@ public class GdxSmokuProject extends Game
 
         // bound camera to layout
         cam.position.x = MathUtils.clamp(cam.position.x, viewWidth/2,  mapWidth - viewWidth/2);
+        
+        System.out.println("pozycja: "+ cam.position.x);
+        System.out.println("wyskokość kamery "+ viewWidth/2);
+        System.out.println("wyskokość mapy" + (mapWidth - viewWidth/2));
+        
         cam.position.y = MathUtils.clamp(cam.position.y, viewHeight/2, mapHeight - viewHeight/2);
         cam.update();
 
