@@ -3,34 +3,31 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
-import com.badlogic.gdx.utils.Array;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.MathUtils;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
+import static jdk.nashorn.internal.runtime.Debug.id;
 
 public class GdxSmokuProject extends Game
 {
     private Stage mainStage;
     private Stage uiStage;
 
-    private AnimatedActor mousey;
+    private BaseActor mousey;
     private BaseActor cheese;
     private BaseActor floor;
     private BaseActor winText;   
@@ -46,11 +43,30 @@ public class GdxSmokuProject extends Game
     final int viewWidth = 640;
     final int viewHeight = 480;
     private TextField txtUsername;
-    private String txtVal;
+    
+    private String txtVal = "a";
+    private String txtVal1 = "a";
+    
+
+    private boolean mouseStop = false;
+    private BaseActor tank;
+    private TextField txtUsername1;
+    
+    private BaseActor hamvee;
+    private TextField hamveeTxt;
+    private String txtHamvee = "a";
+    private long id;
     
     
     public void create() 
     {        
+        
+        
+        Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sounds_of_War.mp3")); 
+        sound.loop(0.1f);
+  
+        
+        
         mainStage = new Stage();
         Gdx.input.setInputProcessor(mainStage);
         
@@ -65,57 +81,88 @@ public class GdxSmokuProject extends Game
      
      Skin mSkin = new Skin(Gdx.files.internal("data/uiskin.json"));   
         
-     txtUsername = new TextField("", mSkin);
-     txtUsername.setMessageText("imput TYPE");
-     txtUsername.setPosition(400, 260);
-     txtUsername.setVisible(false);
-     mainStage.addActor(txtUsername);
      
      
      
-        txtUsername.setTextFieldListener(new TextFieldListener() {
-
-            @Override
+     hamveeTxt = new TextField("", mSkin);
+     hamveeTxt.setMessageText("I recognized the unit with ?");
+     hamveeTxt.setSize(200, 40);
+     hamveeTxt.setPosition(410, 590);
+     hamveeTxt.setVisible(false);
+  
+     hamveeTxt.setTextFieldListener(new TextFieldListener() {
+      
+       @Override
             public void keyTyped(TextField textField, char key) {
-                    txtVal= textField.getText();
+                    txtHamvee= textField.getText();
             }
         });
      
      
+     txtUsername1 = new TextField("", mSkin);
+     txtUsername1.setMessageText("I recognized the unit with ?");
+     txtUsername1.setSize(200, 40);
+     txtUsername1.setPosition(100, 450);
+     txtUsername1.setVisible(false);
+  
+     txtUsername1.setTextFieldListener(new TextFieldListener() {
+       @Override
+            public void keyTyped(TextField textField, char key) {
+                    txtVal1= textField.getText();
+            }
+        });
+
+     txtUsername = new TextField("", mSkin);
+     txtUsername.setMessageText("I recognized the unit with ?");
+     txtUsername.setSize(200, 40);
+     txtUsername.setPosition(420, 360);
+     txtUsername.setVisible(false);
+  
+     txtUsername.setTextFieldListener(new TextFieldListener() {
+       @Override
+            public void keyTyped(TextField textField, char key) {
+                    txtVal= textField.getText();
+            }
+        });
+
+     
+     
           
+        hamvee = new BaseActor();
+        hamvee.setTexture( new Texture(Gdx.files.internal("hamvee.jpg")) );
+        hamvee.setPosition( 400, 600 );
+        hamvee.setSize(250, 150);
+        hamvee.addAction(fadeOut((float) 0.001));
+        hamvee.setOrigin( hamvee.getWidth()/2, hamvee.getHeight()/2 );
+        mainStage.addActor( hamvee );
+   
+        tank = new BaseActor();
+        tank.setTexture( new Texture(Gdx.files.internal("tank.jpg")) );
+        tank.setPosition( 10, 400 );
+        tank.setSize(300, 200);
+        tank.addAction(fadeOut((float) 0.001));
+        tank.setOrigin( tank.getWidth()/2, tank.getHeight()/2 );
         
-            
+        
+        mainStage.addActor( tank );
+        
+        
         cheese = new BaseActor();
         cheese.setTexture( new Texture(Gdx.files.internal("smiglo.jpg")) );
         cheese.setPosition( 400, 300 );
+        cheese.addAction(fadeOut((float) 0.001));
         cheese.setOrigin( cheese.getWidth()/2, cheese.getHeight()/2 );
         mainStage.addActor( cheese );
 
-        mousey = new AnimatedActor();
-
-        TextureRegion[] frames = new TextureRegion[4];
-        for (int n = 0; n < 4; n++)
-        {   
-            String fileName = "mouse" + n + ".png";
-            Texture tex = new Texture(Gdx.files.internal(fileName));
-            tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-            frames[n] = new TextureRegion( tex );
-        }
-        Array<TextureRegion> framesArray = new Array<TextureRegion>(frames);
-
-        Animation anim = new Animation(0.1f, framesArray, Animation.PlayMode.LOOP_PINGPONG);
-
-        mousey.setAnimation( anim );
+       
+        mousey = new BaseActor();
+        mousey.setTexture( new Texture(Gdx.files.internal("solider.png")) );
+        mousey.setSize(150, 210);
         mousey.setOrigin( mousey.getWidth()/2, mousey.getHeight()/2 );
         mousey.setPosition( 20, 20 );
         mainStage.addActor(mousey);
 
-        winText = new BaseActor();
-        winText.setTexture( new Texture(Gdx.files.internal("you-win.png")) );
-        winText.setPosition( 170, 60 );
-        winText.setVisible( false );
-        uiStage.addActor( winText );
-
+       
         BitmapFont font = new BitmapFont();
         String text = "Time: 0";
         LabelStyle style = new LabelStyle( font, Color.NAVY );
@@ -124,6 +171,10 @@ public class GdxSmokuProject extends Game
         timeLabel.setPosition(500,440); // sets bottom left (baseline) corner?
         uiStage.addActor( timeLabel );
 
+        mainStage.addActor(txtUsername);
+        mainStage.addActor(txtUsername1);
+        mainStage.addActor(hamveeTxt);        
+        
         win = false;
     }
 
@@ -133,6 +184,7 @@ public class GdxSmokuProject extends Game
         mousey.velocityX = 0;
         mousey.velocityY = 0;
 
+if (!mouseStop){
         if (Gdx.input.isKeyPressed(Keys.LEFT)) 
             mousey.velocityX -= 100;
         if (Gdx.input.isKeyPressed(Keys.RIGHT))
@@ -141,7 +193,7 @@ public class GdxSmokuProject extends Game
             mousey.velocityY += 100;
         if (Gdx.input.isKeyPressed(Keys.DOWN)) 
             mousey.velocityY -= 100;
-
+}
         // update
         float dt = Gdx.graphics.getDeltaTime();
 
@@ -154,25 +206,44 @@ public class GdxSmokuProject extends Game
 
         // check win condition: mousey must be overlapping cheese
         Rectangle cheeseRectangle = cheese.getBoundingRectangle();
+        Rectangle tankRectangle = tank.getBoundingRectangle();
+        Rectangle hamveeRectangle = hamvee.getBoundingRectangle();
+     
+    
         Rectangle mouseyRectangle = mousey.getBoundingRectangle();
 
-        if ( !win && cheeseRectangle.overlaps(mouseyRectangle ) )
+        if (cheeseRectangle.overlaps(mouseyRectangle ) )
         {
-            win = true;
-            
-            Action spinShrinkFadeOut = Actions.parallel(
-                Actions.fadeOut(100)        // duration of fade in
-            );
 
-            cheese.addAction( spinShrinkFadeOut );
-            
+            mouseStop = true;
+            cheese.addAction(fadeIn((float) 0.8));
             txtUsername.setVisible(true);
-            
-            
-            
-               
- 
         }
+        
+        //TANK reactangle SOLIDER
+        if (tankRectangle.overlaps(mouseyRectangle ) )
+        {
+            mouseStop = true;
+            tank.addAction(fadeIn((float) 0.8));
+            txtUsername1.setVisible(true);
+        }
+
+
+        //Hamvee reactangle SOLIDER
+        if (hamveeRectangle.overlaps(mouseyRectangle ) )
+        {
+                 
+            mouseStop = true;
+            hamvee.addAction(fadeIn((float) 0.8));          
+            hamveeTxt.setVisible(true);
+        }
+        
+        
+        
+        
+        
+        
+        
 
         if (!win)
         {
@@ -195,19 +266,32 @@ public class GdxSmokuProject extends Game
         // bound camera to layout
         cam.position.x = MathUtils.clamp(cam.position.x, viewWidth/2,  mapWidth - viewWidth/2);
         
-   
-        
         cam.position.y = MathUtils.clamp(cam.position.y, viewHeight/2, mapHeight - viewHeight/2);
         cam.update();
 
         
-        System.out.println(txtVal);
+        if ( (txtVal.equalsIgnoreCase("helicopter")) && (txtUsername.isVisible()) ) { 
+                mouseStop = false;
+                txtUsername.setVisible(false);
+                cheese.setVisible(false);
+                }
         
-        
+         if ( txtVal1.equalsIgnoreCase("tank") && txtUsername1.isVisible()) { 
+                mouseStop = false;
+                txtUsername1.setVisible(false);
+                tank.setVisible(false);
+                }
+         
+         if ( txtHamvee.equalsIgnoreCase("hamvee") && hamveeTxt.isVisible()) { 
+                mouseStop = false;
+                hamveeTxt.setVisible(false);
+                hamvee.setVisible(false);
+                }
+
+         
         
         mainStage.draw();
         uiStage.draw();
-
 
         mainStage.draw();
         uiStage.draw();
