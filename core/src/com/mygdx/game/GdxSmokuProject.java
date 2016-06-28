@@ -21,6 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 
 public class GdxSmokuProject extends Game
 {
@@ -42,20 +45,48 @@ public class GdxSmokuProject extends Game
     // window dimensions
     final int viewWidth = 640;
     final int viewHeight = 480;
-
+    private TextField txtUsername;
+    private String txtVal;
+    
+    
     public void create() 
     {        
         mainStage = new Stage();
+        Gdx.input.setInputProcessor(mainStage);
+        
         uiStage = new Stage();
         timeElapsed = 0;
 
         floor = new BaseActor();
-        floor.setTexture( new Texture(Gdx.files.internal("tiles-800-800.jpg")) );
+        floor.setTexture( new Texture(Gdx.files.internal("mapa.png")) );
         floor.setPosition( 0, 0 );
         mainStage.addActor( floor );
+     
+     
+     Skin mSkin = new Skin(Gdx.files.internal("data/uiskin.json"));   
+        
+     txtUsername = new TextField("", mSkin);
+     txtUsername.setMessageText("imput TYPE");
+     txtUsername.setPosition(400, 260);
+     txtUsername.setVisible(false);
+     mainStage.addActor(txtUsername);
+     
+     
+     
+        txtUsername.setTextFieldListener(new TextFieldListener() {
 
+            @Override
+            public void keyTyped(TextField textField, char key) {
+                    txtVal= textField.getText();
+            }
+        });
+     
+     
+          
+        
+            
         cheese = new BaseActor();
-        cheese.setTexture( new Texture(Gdx.files.internal("cheese.png")) );
+        cheese.setTexture( new Texture(Gdx.files.internal("smiglo.jpg")) );
         cheese.setPosition( 400, 300 );
         cheese.setOrigin( cheese.getWidth()/2, cheese.getHeight()/2 );
         mainStage.addActor( cheese );
@@ -125,18 +156,22 @@ public class GdxSmokuProject extends Game
         Rectangle cheeseRectangle = cheese.getBoundingRectangle();
         Rectangle mouseyRectangle = mousey.getBoundingRectangle();
 
-        if ( !win && cheeseRectangle.contains( mouseyRectangle ) )
+        if ( !win && cheeseRectangle.overlaps(mouseyRectangle ) )
         {
             win = true;
             
             Action spinShrinkFadeOut = Actions.parallel(
-                Actions.alpha(1),         // set transparency value
-                Actions.rotateBy(360, 1), // rotation amount, duration
+                Actions.alpha(1),         // set transparency value             
                 Actions.scaleTo(0,0, 2),  // x amount, y amount, duration
-                Actions.fadeOut(1)        // duration of fade in
+                Actions.fadeOut(100)        // duration of fade in
             );
 
             cheese.addAction( spinShrinkFadeOut );
+            
+            txtUsername.setVisible(true);
+            
+            
+            
                
             Action fadeInColorCycleForever = Actions.sequence( 
                 Actions.alpha(0),   // set transparency value
@@ -175,13 +210,16 @@ public class GdxSmokuProject extends Game
         // bound camera to layout
         cam.position.x = MathUtils.clamp(cam.position.x, viewWidth/2,  mapWidth - viewWidth/2);
         
-        System.out.println("pozycja: "+ cam.position.x);
-        System.out.println("wyskokość kamery "+ viewWidth/2);
-        System.out.println("wyskokość mapy" + (mapWidth - viewWidth/2));
+   
         
         cam.position.y = MathUtils.clamp(cam.position.y, viewHeight/2, mapHeight - viewHeight/2);
         cam.update();
 
+        
+        System.out.println(txtVal);
+        
+        
+        
         mainStage.draw();
         uiStage.draw();
 
