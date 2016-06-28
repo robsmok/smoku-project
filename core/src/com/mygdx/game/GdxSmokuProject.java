@@ -161,8 +161,6 @@ public class GdxSmokuProject extends Game
             win = true;
             
             Action spinShrinkFadeOut = Actions.parallel(
-                Actions.alpha(1),         // set transparency value             
-                Actions.scaleTo(0,0, 2),  // x amount, y amount, duration
                 Actions.fadeOut(100)        // duration of fade in
             );
 
@@ -173,20 +171,7 @@ public class GdxSmokuProject extends Game
             
             
                
-            Action fadeInColorCycleForever = Actions.sequence( 
-                Actions.alpha(0),   // set transparency value
-                Actions.show(),     // set visible to true
-                Actions.fadeIn(2),  // duration of fade out
-                Actions.forever(    
-                    Actions.sequence(
-                        // color shade to approach, duration
-                        Actions.color( new Color(1,0,0,1), 1 ),
-                        Actions.color( new Color(0,0,1,1), 1 )
-                    )
-                )
-            );
-            
-            winText.addAction( fadeInColorCycleForever );
+ 
         }
 
         if (!win)
