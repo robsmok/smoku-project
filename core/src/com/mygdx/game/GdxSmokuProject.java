@@ -102,6 +102,7 @@ public class GdxSmokuProject extends Game
         mainStage.addActor( floor );
 
         
+        
      
      Skin mSkin = new Skin(Gdx.files.internal("data/uiskin.json"));   
         
