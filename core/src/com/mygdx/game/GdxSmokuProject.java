@@ -14,12 +14,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import javax.swing.text.StyledEditorKit;
 import static jdk.nashorn.internal.runtime.Debug.id;
 
 public class GdxSmokuProject extends Game
@@ -28,7 +34,7 @@ public class GdxSmokuProject extends Game
     private Stage uiStage;
 
     private BaseActor mousey;
-    private BaseActor cheese;
+    private BaseActor smiglo;
     private BaseActor floor;
     private BaseActor winText;   
     private boolean win;
@@ -37,12 +43,12 @@ public class GdxSmokuProject extends Game
     private Label timeLabel;
 
  	// game world dimensions
-    final int mapWidth = 800;
-    final int mapHeight = 800;
+    final int mapWidth = 600;
+    final int mapHeight = 1000;
     // window dimensions
-    final int viewWidth = 640;
+    final int viewWidth = 600;
     final int viewHeight = 480;
-    private TextField txtUsername;
+    private TextField txtSmiglo;
     
     private String txtVal = "a";
     private String txtVal1 = "a";
@@ -50,13 +56,30 @@ public class GdxSmokuProject extends Game
 
     private boolean mouseStop = false;
     private BaseActor tank;
-    private TextField txtUsername1;
+    private TextField txtTank;
     
     private BaseActor hamvee;
     private TextField hamveeTxt;
     private String txtHamvee = "a";
     private long id;
+    private ParticleEffect pe;
+    private SpriteBatch batch;
+    private ParticleActor baseExplosion;
+    private ParticleActor explosion;
     
+    public boolean tankExplode = true;
+    public boolean heliExplode = true;
+    private boolean hamveeExplode = true;
+    private boolean endSound = true;
+    
+    
+    private Sound sound2;
+
+    private int score = 0;
+    private BaseActor floor2;
+
+
+     
     
     public void create() 
     {        
@@ -66,28 +89,26 @@ public class GdxSmokuProject extends Game
         sound.loop(0.1f);
   
         
-        
         mainStage = new Stage();
         Gdx.input.setInputProcessor(mainStage);
         
         uiStage = new Stage();
         timeElapsed = 0;
 
+        
         floor = new BaseActor();
-        floor.setTexture( new Texture(Gdx.files.internal("mapa.png")) );
+        floor.setTexture( new Texture(Gdx.files.internal("mapa600x1000.png")) );
         floor.setPosition( 0, 0 );
         mainStage.addActor( floor );
-     
+
+        
      
      Skin mSkin = new Skin(Gdx.files.internal("data/uiskin.json"));   
         
      
-     
-     
      hamveeTxt = new TextField("", mSkin);
-     hamveeTxt.setMessageText("I recognized the unit with ?");
      hamveeTxt.setSize(200, 40);
-     hamveeTxt.setPosition(410, 590);
+     hamveeTxt.setPosition(350, 570);
      hamveeTxt.setVisible(false);
   
      hamveeTxt.setTextFieldListener(new TextFieldListener() {
@@ -99,30 +120,35 @@ public class GdxSmokuProject extends Game
         });
      
      
-     txtUsername1 = new TextField("", mSkin);
-     txtUsername1.setMessageText("I recognized the unit with ?");
-     txtUsername1.setSize(200, 40);
-     txtUsername1.setPosition(100, 450);
-     txtUsername1.setVisible(false);
+     txtTank = new TextField("", mSkin);
+     txtTank.setSize(200, 40);
+     txtTank.setPosition(100, 150);
+     txtTank.setVisible(false);
   
-     txtUsername1.setTextFieldListener(new TextFieldListener() {
+     txtTank.setTextFieldListener(new TextFieldListener() {
        @Override
             public void keyTyped(TextField textField, char key) {
                     txtVal1= textField.getText();
             }
         });
 
-     txtUsername = new TextField("", mSkin);
-     txtUsername.setMessageText("I recognized the unit with ?");
-     txtUsername.setSize(200, 40);
-     txtUsername.setPosition(420, 360);
-     txtUsername.setVisible(false);
-  
-     txtUsername.setTextFieldListener(new TextFieldListener() {
+ 
+     txtSmiglo = new TextField("", mSkin);
+     txtSmiglo.setSize(200, 40);
+     txtSmiglo.setPosition(310, 380);
+     txtSmiglo.setVisible(false);  
+     txtSmiglo.setCursorPosition(mapWidth);
+   
+     
+   
+     
+     txtSmiglo.setTextFieldListener(new TextFieldListener() {
        @Override
             public void keyTyped(TextField textField, char key) {
                     txtVal= textField.getText();
             }
+            
+     
         });
 
      
@@ -130,7 +156,7 @@ public class GdxSmokuProject extends Game
           
         hamvee = new BaseActor();
         hamvee.setTexture( new Texture(Gdx.files.internal("hamvee.jpg")) );
-        hamvee.setPosition( 400, 600 );
+        hamvee.setPosition( 300, 600 );
         hamvee.setSize(250, 150);
         hamvee.addAction(fadeOut((float) 0.001));
         hamvee.setOrigin( hamvee.getWidth()/2, hamvee.getHeight()/2 );
@@ -138,7 +164,7 @@ public class GdxSmokuProject extends Game
    
         tank = new BaseActor();
         tank.setTexture( new Texture(Gdx.files.internal("tank.jpg")) );
-        tank.setPosition( 10, 400 );
+        tank.setPosition( 100, 150 );
         tank.setSize(300, 200);
         tank.addAction(fadeOut((float) 0.001));
         tank.setOrigin( tank.getWidth()/2, tank.getHeight()/2 );
@@ -147,17 +173,18 @@ public class GdxSmokuProject extends Game
         mainStage.addActor( tank );
         
         
-        cheese = new BaseActor();
-        cheese.setTexture( new Texture(Gdx.files.internal("smiglo.jpg")) );
-        cheese.setPosition( 400, 300 );
-        cheese.addAction(fadeOut((float) 0.001));
-        cheese.setOrigin( cheese.getWidth()/2, cheese.getHeight()/2 );
-        mainStage.addActor( cheese );
+        
+        smiglo = new BaseActor();
+        smiglo.setTexture( new Texture(Gdx.files.internal("smiglo.jpg")) );
+        smiglo.setPosition( 200, 400 );
+        smiglo.addAction(fadeOut((float) 0.001));
+        smiglo.setOrigin( smiglo.getWidth()/2, smiglo.getHeight()/2 );
+        mainStage.addActor( smiglo );
 
        
         mousey = new BaseActor();
         mousey.setTexture( new Texture(Gdx.files.internal("solider.png")) );
-        mousey.setSize(150, 210);
+        mousey.setSize(110, 110);
         mousey.setOrigin( mousey.getWidth()/2, mousey.getHeight()/2 );
         mousey.setPosition( 20, 20 );
         mainStage.addActor(mousey);
@@ -171,16 +198,24 @@ public class GdxSmokuProject extends Game
         timeLabel.setPosition(500,440); // sets bottom left (baseline) corner?
         uiStage.addActor( timeLabel );
 
-        mainStage.addActor(txtUsername);
-        mainStage.addActor(txtUsername1);
-        mainStage.addActor(hamveeTxt);        
         
-        win = false;
+        baseExplosion = new ParticleActor();
+        baseExplosion.load("dymek10", "");
+        
+        mainStage.addActor(txtSmiglo);
+        mainStage.addActor(txtTank);
+        mainStage.addActor(hamveeTxt);      
+
+
     }
 
     public void render() 
     {   
-        // process input
+ 
+
+      
+
+// process input
         mousey.velocityX = 0;
         mousey.velocityY = 0;
 
@@ -193,41 +228,44 @@ if (!mouseStop){
             mousey.velocityY += 100;
         if (Gdx.input.isKeyPressed(Keys.DOWN)) 
             mousey.velocityY -= 100;
+  
 }
         // update
-        float dt = Gdx.graphics.getDeltaTime();
-
-        mainStage.act(dt);
-        uiStage.act(dt);
+     
+            float dt = Gdx.graphics.getDeltaTime();
+            mainStage.act(dt);
+            uiStage.act(dt);
+   
 
 		// bound mousey to the rectangle defined by mapWidth, mapHeight
         mousey.setX( MathUtils.clamp( mousey.getX(), 0,  mapWidth - mousey.getWidth() ));
         mousey.setY( MathUtils.clamp( mousey.getY(), 0,  mapHeight - mousey.getHeight() ));
 
-        // check win condition: mousey must be overlapping cheese
-        Rectangle cheeseRectangle = cheese.getBoundingRectangle();
+        // check win condition: mousey must be overlapping smiglo
+        Rectangle smigloRectangle = smiglo.getBoundingRectangle();
         Rectangle tankRectangle = tank.getBoundingRectangle();
         Rectangle hamveeRectangle = hamvee.getBoundingRectangle();
      
     
         Rectangle mouseyRectangle = mousey.getBoundingRectangle();
 
-        if (cheeseRectangle.overlaps(mouseyRectangle ) )
+        if (smigloRectangle.overlaps(mouseyRectangle ) )
         {
-
             mouseStop = true;
-            cheese.addAction(fadeIn((float) 0.8));
-            txtUsername.setVisible(true);
-        }
+            smiglo.addAction(fadeIn((float) 0.8));
+            mainStage.setKeyboardFocus(txtSmiglo);
+            txtSmiglo.setVisible(true);
+       }
         
         //TANK reactangle SOLIDER
         if (tankRectangle.overlaps(mouseyRectangle ) )
         {
             mouseStop = true;
             tank.addAction(fadeIn((float) 0.8));
-            txtUsername1.setVisible(true);
-        }
-
+            mainStage.setKeyboardFocus(txtTank);
+            txtTank.setVisible(true);
+    }
+ 
 
         //Hamvee reactangle SOLIDER
         if (hamveeRectangle.overlaps(mouseyRectangle ) )
@@ -235,12 +273,9 @@ if (!mouseStop){
                  
             mouseStop = true;
             hamvee.addAction(fadeIn((float) 0.8));          
+            mainStage.setKeyboardFocus(hamveeTxt);
             hamveeTxt.setVisible(true);
         }
-        
-        
-        
-        
         
         
         
@@ -257,43 +292,99 @@ if (!mouseStop){
 
         // camera adjustment
         Camera cam = mainStage.getCamera();
-
-        
+       
         // center camera on player
         cam.position.set( mousey.getX() + mousey.getOriginX(), 
             mousey.getY() + mousey.getOriginY(), 0 );
 
         // bound camera to layout
         cam.position.x = MathUtils.clamp(cam.position.x, viewWidth/2,  mapWidth - viewWidth/2);
-        
         cam.position.y = MathUtils.clamp(cam.position.y, viewHeight/2, mapHeight - viewHeight/2);
         cam.update();
 
         
-        if ( (txtVal.equalsIgnoreCase("helicopter")) && (txtUsername.isVisible()) ) { 
+        if ( (txtVal.equalsIgnoreCase("helicopter")) && (txtSmiglo.isVisible()) ) { 
                 mouseStop = false;
-                txtUsername.setVisible(false);
-                cheese.setVisible(false);
+                txtSmiglo.setVisible(false);
+                smiglo.setVisible(false);
+         
+ 
+                ParticleActor explosion_heli = baseExplosion.clone();
+                        explosion_heli.setPosition( 400, 490 );
+                         
+                    if(heliExplode){
+                        explosion_heli.start();  
+                        Sound sound2 = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
+                        sound2.play();
+                        mainStage.addActor(explosion_heli);          
+                        score++;
+                     heliExplode = false;    
+                    };
                 }
+
         
-         if ( txtVal1.equalsIgnoreCase("tank") && txtUsername1.isVisible()) { 
+        
+         if ( txtVal1.equalsIgnoreCase("tank") && txtTank.isVisible()) { 
                 mouseStop = false;
-                txtUsername1.setVisible(false);
+                txtTank.setVisible(false);
                 tank.setVisible(false);
+
+                ParticleActor explosion = baseExplosion.clone();
+                         explosion.setPosition( 180, 290 );
+                         
+                    if(tankExplode){
+                         explosion.start();  
+                              
+                        Sound sound2 = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
+                        sound2.play();
+                
+                         mainStage.addActor(explosion);
+                         score++;
+                    tankExplode = false;    
+                    };
+                        
+                
+
+                
+                
                 }
          
          if ( txtHamvee.equalsIgnoreCase("hamvee") && hamveeTxt.isVisible()) { 
                 mouseStop = false;
                 hamveeTxt.setVisible(false);
                 hamvee.setVisible(false);
-                }
-
+ 
+                        ParticleActor explosion_hamvee = baseExplosion.clone();
+                         explosion_hamvee.setPosition( 400, 620 );
+                         
+                    if(hamveeExplode){
+                         explosion_hamvee.start();  
+                              
+                        Sound sound2 = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
+                        sound2.play();
+                
+                         mainStage.addActor(explosion_hamvee);          
+                    score++;
+                    hamveeExplode = false;    
+ 
+                    }
          
+         }
+         
+        mainStage.draw();
+ 
+        System.out.println(score);
         
-        mainStage.draw();
-        uiStage.draw();
-
-        mainStage.draw();
-        uiStage.draw();
+        if( score == 3){
+                    if (endSound){
+                    Sound sound_morse = Gdx.audio.newSound(Gdx.files.internal("Morse.mp3")); 
+                        sound_morse.play();
+                        
+                    }
+                    endSound = false;
+                    
+        };
+        
     }
+
 }

@@ -22,6 +22,8 @@ public class BaseActor extends Actor
         velocityX = 0;
         velocityY = 0;
     }
+
+
     
     public void setTexture(Texture t)
     { 
