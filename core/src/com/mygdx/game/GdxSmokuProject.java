@@ -37,7 +37,7 @@ public class GdxSmokuProject extends Game
     private BaseActor smiglo;
     private BaseActor floor;
     private BaseActor winText;   
-    private boolean win;
+
 
     private float timeElapsed;
     private Label timeLabel;
@@ -48,10 +48,10 @@ public class GdxSmokuProject extends Game
     // window dimensions
     final int viewWidth = 600;
     final int viewHeight = 480;
-    private TextField txtSmiglo;
     
     private String txtVal = "a";
     private String txtVal1 = "a";
+    private TextField txtSmiglo;
     
 
     private boolean mouseStop = false;
@@ -70,6 +70,7 @@ public class GdxSmokuProject extends Game
     public boolean tankExplode = true;
     public boolean heliExplode = true;
     private boolean hamveeExplode = true;
+    
     private boolean endSound = true;
     
     
@@ -84,10 +85,8 @@ public class GdxSmokuProject extends Game
     public void create() 
     {        
         
-        
         Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sounds_of_War.mp3")); 
         sound.loop(0.1f);
-  
         
         mainStage = new Stage();
         Gdx.input.setInputProcessor(mainStage);
@@ -95,17 +94,12 @@ public class GdxSmokuProject extends Game
         uiStage = new Stage();
         timeElapsed = 0;
 
-        
         floor = new BaseActor();
         floor.setTexture( new Texture(Gdx.files.internal("mapa600x1000.png")) );
         floor.setPosition( 0, 0 );
         mainStage.addActor( floor );
 
-        
-        
-     
-     Skin mSkin = new Skin(Gdx.files.internal("data/uiskin.json"));   
-        
+         Skin mSkin = new Skin(Gdx.files.internal("data/uiskin.json"));   
      
      hamveeTxt = new TextField("", mSkin);
      hamveeTxt.setSize(200, 40);
@@ -136,7 +130,7 @@ public class GdxSmokuProject extends Game
  
      txtSmiglo = new TextField("", mSkin);
      txtSmiglo.setSize(200, 40);
-     txtSmiglo.setPosition(310, 380);
+     txtSmiglo.setPosition(310, 350);
      txtSmiglo.setVisible(false);  
      txtSmiglo.setCursorPosition(mapWidth);
    
@@ -152,9 +146,7 @@ public class GdxSmokuProject extends Game
      
         });
 
-     
-     
-          
+      
         hamvee = new BaseActor();
         hamvee.setTexture( new Texture(Gdx.files.internal("hamvee.jpg")) );
         hamvee.setPosition( 300, 600 );
@@ -168,36 +160,31 @@ public class GdxSmokuProject extends Game
         tank.setPosition( 100, 150 );
         tank.setSize(300, 200);
         tank.addAction(fadeOut((float) 0.001));
-        tank.setOrigin( tank.getWidth()/2, tank.getHeight()/2 );
-        
-        
+        tank.setOrigin( tank.getWidth()/2, tank.getHeight()/2 );   
         mainStage.addActor( tank );
-        
-        
-        
+            
         smiglo = new BaseActor();
         smiglo.setTexture( new Texture(Gdx.files.internal("smiglo.jpg")) );
-        smiglo.setPosition( 200, 400 );
+        smiglo.setPosition( 200, 350 );
         smiglo.addAction(fadeOut((float) 0.001));
         smiglo.setOrigin( smiglo.getWidth()/2, smiglo.getHeight()/2 );
         mainStage.addActor( smiglo );
-
        
         mousey = new BaseActor();
         mousey.setTexture( new Texture(Gdx.files.internal("solider.png")) );
         mousey.setSize(110, 110);
         mousey.setOrigin( mousey.getWidth()/2, mousey.getHeight()/2 );
-        mousey.setPosition( 20, 20 );
+        mousey.setPosition( 100, 20 );
         mainStage.addActor(mousey);
 
        
-        BitmapFont font = new BitmapFont();
-        String text = "Time: 0";
-        LabelStyle style = new LabelStyle( font, Color.NAVY );
-        timeLabel = new Label( text, style );
-        timeLabel.setFontScale(2);
-        timeLabel.setPosition(500,440); // sets bottom left (baseline) corner?
-        uiStage.addActor( timeLabel );
+                BitmapFont font = new BitmapFont();
+                String text = "Time: 0";
+                LabelStyle style = new LabelStyle( font, Color.NAVY );
+                timeLabel = new Label( text, style );
+                timeLabel.setFontScale(2);
+                timeLabel.setPosition(500,440); // sets bottom left (baseline) corner?
+                uiStage.addActor( timeLabel );
 
         
         baseExplosion = new ParticleActor();
@@ -250,42 +237,50 @@ if (!mouseStop){
     
         Rectangle mouseyRectangle = mousey.getBoundingRectangle();
 
+        if(heliExplode){ //if helicopter not expolode
+            
         if (smigloRectangle.overlaps(mouseyRectangle ) )
         {
-            mouseStop = true;
+        
             smiglo.addAction(fadeIn((float) 0.8));
-            mainStage.setKeyboardFocus(txtSmiglo);
             txtSmiglo.setVisible(true);
-       }
+            mainStage.setKeyboardFocus(txtSmiglo);
+            
+            
+                mouseStop = true;
+            }
+        }
         
         //TANK reactangle SOLIDER
+        if(tankExplode){ //if tank no explode
         if (tankRectangle.overlaps(mouseyRectangle ) )
         {
-            mouseStop = true;
             tank.addAction(fadeIn((float) 0.8));
-            mainStage.setKeyboardFocus(txtTank);
             txtTank.setVisible(true);
+            mainStage.setKeyboardFocus(txtTank);
+            
+            
+            mouseStop = true;}
     }
  
 
         //Hamvee reactangle SOLIDER
+        if(hamveeExplode){ //if hamvee no explode
         if (hamveeRectangle.overlaps(mouseyRectangle ) )
         {
                  
-            mouseStop = true;
+            
             hamvee.addAction(fadeIn((float) 0.8));          
-            mainStage.setKeyboardFocus(hamveeTxt);
             hamveeTxt.setVisible(true);
-        }
+            mainStage.setKeyboardFocus(hamveeTxt);
         
+            
+            mouseStop = true;}
+            
+        }
         
         
 
-        if (!win)
-        {
-            timeElapsed += dt;
-            timeLabel.setText( "Time: " + (int)timeElapsed );
-        }
 
         // draw graphics
         Gdx.gl.glClearColor(0.8f, 0.8f, 1, 1);
@@ -308,7 +303,7 @@ if (!mouseStop){
                 mouseStop = false;
                 txtSmiglo.setVisible(false);
                 smiglo.setVisible(false);
-         
+               
  
                 ParticleActor explosion_heli = baseExplosion.clone();
                         explosion_heli.setPosition( 400, 490 );
@@ -329,7 +324,7 @@ if (!mouseStop){
                 mouseStop = false;
                 txtTank.setVisible(false);
                 tank.setVisible(false);
-
+               
                 ParticleActor explosion = baseExplosion.clone();
                          explosion.setPosition( 180, 290 );
                          
