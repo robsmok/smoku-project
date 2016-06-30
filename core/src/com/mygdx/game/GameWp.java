@@ -79,6 +79,11 @@ public class GameWp extends Game
     private int score = 0;
     private BaseActor floor2;
 
+    GameWp(Game game) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+   
 
      
     

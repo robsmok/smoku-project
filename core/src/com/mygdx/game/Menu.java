@@ -34,7 +34,7 @@ public class Menu implements Screen
 
        
         BitmapFont font = new BitmapFont();
-        String text = " Press S to start, M for main menu ";
+        String text = " Press Space to start, M for main menu ";
         LabelStyle style = new LabelStyle( font, Color.YELLOW );
         Label instructions = new Label( text, style );
         instructions.setFontScale(2);
@@ -48,8 +48,8 @@ public class Menu implements Screen
     public void render(float dt) 
     {   
         // process input
-        if (Gdx.input.isKeyPressed(Keys.S)) 
-           // game.setScreen( new GdxSmokuProject(game) );
+        if (Gdx.input.isKeyPressed(Keys.SPACE)) 
+           game.setScreen( new GameWp(game) );
         
            if (Gdx.input.isKeyPressed(Keys.X)) 
             //game.setScreen( new SmokuMenu(game) );
