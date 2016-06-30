@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -28,8 +29,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import javax.swing.text.StyledEditorKit;
 import static jdk.nashorn.internal.runtime.Debug.id;
 
-public class GameWp extends Game
-{
+public class GameWp extends Game implements Screen
+{ 
     private Stage mainStage;
     private Stage uiStage;
 
@@ -74,16 +75,23 @@ public class GameWp extends Game
     private boolean endSound = true;
     
     
-    private Sound sound2;
-
+    private Sound sound2;   
+    private Sound sound_morse;
+    
     private int score = 0;
     private BaseActor floor2;
 
-    GameWp(Game game) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+
+    public Game game;
+    private float stoper;
+    public GameWp(Game g)
+    {
+        game = g;
+        create();
     }
 
-   
+
 
      
     
@@ -202,7 +210,7 @@ public class GameWp extends Game
 
     }
 
-    public void render() 
+    public void render(float dt) 
     {   
  
 
@@ -221,11 +229,15 @@ if (!mouseStop){
             mousey.velocityY += 100;
         if (Gdx.input.isKeyPressed(Keys.DOWN)) 
             mousey.velocityY -= 100;
+                    
+        if (Gdx.input.isKeyPressed(Keys.ESCAPE)) 
+            game.setScreen( new Menu(game) );
+            
   
 }
         // update
      
-            float dt = Gdx.graphics.getDeltaTime();
+          
             mainStage.act(dt);
             uiStage.act(dt);
    
@@ -380,11 +392,30 @@ if (!mouseStop){
                     if (endSound){
                     Sound sound_morse = Gdx.audio.newSound(Gdx.files.internal("Morse.mp3")); 
                         sound_morse.play();
+
+                                       
                         
                     }
                     endSound = false;
+                    stoper = dt + stoper;
+                    
+                    if (stoper > 3) {
+                   
+                    }
+                    
+                    
                     
         };
+        
+    }
+
+    @Override
+    public void show() {
+    }
+
+    @Override
+    public void hide() {
+        
         
     }
 

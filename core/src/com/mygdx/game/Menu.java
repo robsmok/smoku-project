@@ -55,7 +55,7 @@ public class Menu implements Screen
             //game.setScreen( new SmokuMenu(game) );
            
            if (Gdx.input.isKeyPressed(Keys.M)) 
-            //game.setScreen( new CheeseMenu(game) );
+            game.setScreen( new Menu(game));
 
 
            
