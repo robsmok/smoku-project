@@ -32,11 +32,7 @@ public class Menu implements Screen
         background.setTexture( new Texture(Gdx.files.internal("tiles-menu.jpg")) );
         uiStage.addActor( background );
 
-        BaseActor titleText = new BaseActor();
-        titleText.setTexture( new Texture(Gdx.files.internal("")) );
-        titleText.setPosition( 20, 100 );
-        uiStage.addActor( titleText );
-
+       
         BitmapFont font = new BitmapFont();
         String text = " Press S to start, M for main menu ";
         LabelStyle style = new LabelStyle( font, Color.YELLOW );
