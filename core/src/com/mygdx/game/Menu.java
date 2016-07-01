@@ -19,10 +19,20 @@ public class Menu implements Screen
     private Game game;
 
     public Menu(Game g)
-    {
+    {       
         game = g;
         create();
     }
+    
+    public Menu(Game g, String s)
+    {       
+        
+        game = g;
+        create();
+    }
+    
+    
+    
 
     public void create() 
     {        
@@ -81,7 +91,11 @@ public class Menu implements Screen
     public void dispose() {  }
 
     @Override
-    public void show()    {  }
+    public void show()    {  
+    
+    
+    
+    }
 
     @Override
     public void hide()    {  }

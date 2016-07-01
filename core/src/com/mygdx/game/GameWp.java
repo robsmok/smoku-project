@@ -18,16 +18,11 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
-import javax.swing.text.StyledEditorKit;
-import static jdk.nashorn.internal.runtime.Debug.id;
 
 public class GameWp extends Game implements Screen
 { 
@@ -75,6 +70,7 @@ public class GameWp extends Game implements Screen
     private boolean endSound = true;
     
     
+ 
     private Sound sound2;   
     private Sound sound_morse;
     
@@ -85,6 +81,11 @@ public class GameWp extends Game implements Screen
 
     public Game game;
     private float stoper;
+    
+   Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sounds_of_War.mp3")); 
+        
+   
+    
     public GameWp(Game g)
     {
         game = g;
@@ -98,7 +99,6 @@ public class GameWp extends Game implements Screen
     public void create() 
     {        
         
-        Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sounds_of_War.mp3")); 
         sound.loop(0.1f);
         
         mainStage = new Stage();
@@ -411,12 +411,21 @@ if (!mouseStop){
 
     @Override
     public void show() {
+    
+        System.out.println("showshow showshow showshow show");
+      
+    
     }
 
     @Override
     public void hide() {
         
         
+        game.pause();
+        
     }
+    
+    
+    
 
 }
