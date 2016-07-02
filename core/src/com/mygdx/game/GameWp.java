@@ -29,7 +29,7 @@ public class GameWp extends Game implements Screen
     private Stage mainStage;
     private Stage uiStage;
 
-    private BaseActor mousey;
+    private BaseActor solider;
     private BaseActor smiglo;
     private BaseActor floor;
     private BaseActor winText;   
@@ -71,8 +71,6 @@ public class GameWp extends Game implements Screen
     
     
  
-    private Sound sound2;   
-    private Sound sound_morse;
     
     private int score = 0;
     private BaseActor floor2;
@@ -83,6 +81,9 @@ public class GameWp extends Game implements Screen
     private float stoper;
     
    Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sounds_of_War.mp3")); 
+   Sound sound_morse = Gdx.audio.newSound(Gdx.files.internal("Morse.mp3"));
+   Sound grenade = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
+    private BaseActor sand;
         
    
     
@@ -91,7 +92,6 @@ public class GameWp extends Game implements Screen
         game = g;
         create();
     }
-
 
 
      
@@ -112,7 +112,19 @@ public class GameWp extends Game implements Screen
         floor.setPosition( 0, 0 );
         mainStage.addActor( floor );
 
-         Skin mSkin = new Skin(Gdx.files.internal("data/uiskin.json"));   
+
+        //sand bag
+        
+        sand = new BaseActor();
+        sand.setTexture( new Texture(Gdx.files.internal("sand.png")) );
+        sand.setPosition( 400, 100 );
+        mainStage.addActor( sand );
+
+        
+        
+        
+        
+        Skin mSkin = new Skin(Gdx.files.internal("data/uiskin.json"));   
      
      hamveeTxt = new TextField("", mSkin);
      hamveeTxt.setSize(200, 40);
@@ -183,12 +195,12 @@ public class GameWp extends Game implements Screen
         smiglo.setOrigin( smiglo.getWidth()/2, smiglo.getHeight()/2 );
         mainStage.addActor( smiglo );
        
-        mousey = new BaseActor();
-        mousey.setTexture( new Texture(Gdx.files.internal("solider.png")) );
-        mousey.setSize(110, 110);
-        mousey.setOrigin( mousey.getWidth()/2, mousey.getHeight()/2 );
-        mousey.setPosition( 100, 20 );
-        mainStage.addActor(mousey);
+        solider = new BaseActor();
+        solider.setTexture( new Texture(Gdx.files.internal("solider.png")) );
+        solider.setSize(110, 110);
+        solider.setOrigin( solider.getWidth()/2, solider.getHeight()/2 );
+        solider.setPosition( 100, 20 );
+        mainStage.addActor(solider);
 
        
                 BitmapFont font = new BitmapFont();
@@ -210,6 +222,9 @@ public class GameWp extends Game implements Screen
 
     }
 
+
+   
+    
     public void render(float dt) 
     {   
  
@@ -217,18 +232,18 @@ public class GameWp extends Game implements Screen
       
 
 // process input
-        mousey.velocityX = 0;
-        mousey.velocityY = 0;
+        solider.velocityX = 0;
+        solider.velocityY = 0;
 
 if (!mouseStop){
         if (Gdx.input.isKeyPressed(Keys.LEFT)) 
-            mousey.velocityX -= 100;
+            solider.velocityX -= 100;
         if (Gdx.input.isKeyPressed(Keys.RIGHT))
-            mousey.velocityX += 100;;
+            solider.velocityX += 100;;
         if (Gdx.input.isKeyPressed(Keys.UP)) 
-            mousey.velocityY += 100;
+            solider.velocityY += 100;
         if (Gdx.input.isKeyPressed(Keys.DOWN)) 
-            mousey.velocityY -= 100;
+            solider.velocityY -= 100;
                     
         if (Gdx.input.isKeyPressed(Keys.ESCAPE)) 
             game.setScreen( new Menu(game) );
@@ -242,21 +257,21 @@ if (!mouseStop){
             uiStage.act(dt);
    
 
-		// bound mousey to the rectangle defined by mapWidth, mapHeight
-        mousey.setX( MathUtils.clamp( mousey.getX(), 0,  mapWidth - mousey.getWidth() ));
-        mousey.setY( MathUtils.clamp( mousey.getY(), 0,  mapHeight - mousey.getHeight() ));
+		// bound solider to the rectangle defined by mapWidth, mapHeight
+        solider.setX( MathUtils.clamp( solider.getX(), 0,  mapWidth - solider.getWidth() ));
+        solider.setY( MathUtils.clamp( solider.getY(), 0,  mapHeight - solider.getHeight() ));
 
-        // check win condition: mousey must be overlapping smiglo
+        // check win condition: solider must be overlapping smiglo
         Rectangle smigloRectangle = smiglo.getBoundingRectangle();
         Rectangle tankRectangle = tank.getBoundingRectangle();
         Rectangle hamveeRectangle = hamvee.getBoundingRectangle();
      
     
-        Rectangle mouseyRectangle = mousey.getBoundingRectangle();
+        Rectangle soliderRectangle = solider.getBoundingRectangle();
 
         if(heliExplode){ //if helicopter not expolode
             
-        if (smigloRectangle.overlaps(mouseyRectangle ) )
+        if (smigloRectangle.overlaps(soliderRectangle ) )
         {
         
             smiglo.addAction(fadeIn((float) 0.8));
@@ -270,7 +285,7 @@ if (!mouseStop){
         
         //TANK reactangle SOLIDER
         if(tankExplode){ //if tank no explode
-        if (tankRectangle.overlaps(mouseyRectangle ) )
+        if (tankRectangle.overlaps(soliderRectangle ) )
         {
             tank.addAction(fadeIn((float) 0.8));
             txtTank.setVisible(true);
@@ -283,7 +298,7 @@ if (!mouseStop){
 
         //Hamvee reactangle SOLIDER
         if(hamveeExplode){ //if hamvee no explode
-        if (hamveeRectangle.overlaps(mouseyRectangle ) )
+        if (hamveeRectangle.overlaps(soliderRectangle ) )
         {
                  
             
@@ -307,14 +322,19 @@ if (!mouseStop){
         Camera cam = mainStage.getCamera();
        
         // center camera on player
-        cam.position.set( mousey.getX() + mousey.getOriginX(), 
-            mousey.getY() + mousey.getOriginY(), 0 );
+        cam.position.set( solider.getX() + solider.getOriginX(), 
+            solider.getY() + solider.getOriginY(), 0 );
 
         // bound camera to layout
         cam.position.x = MathUtils.clamp(cam.position.x, viewWidth/2,  mapWidth - viewWidth/2);
         cam.position.y = MathUtils.clamp(cam.position.y, viewHeight/2, mapHeight - viewHeight/2);
         cam.update();
 
+        ///////////////////////////
+        ///////////////////////////
+        ///////////////////////////
+        solider.
+        
         
         if ( (txtVal.equalsIgnoreCase("helicopter")) && (txtSmiglo.isVisible()) ) { 
                 mouseStop = false;
@@ -327,8 +347,7 @@ if (!mouseStop){
                          
                     if(heliExplode){
                         explosion_heli.start();  
-                        Sound sound2 = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
-                        sound2.play();
+                        grenade.play();
                         mainStage.addActor(explosion_heli);          
                         score++;
                      heliExplode = false;    
@@ -346,10 +365,9 @@ if (!mouseStop){
                          explosion.setPosition( 180, 290 );
                          
                     if(tankExplode){
-                         explosion.start();  
-                              
-                        Sound sound2 = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
-                        sound2.play();
+                         
+                        explosion.start();  
+                        grenade.play();
                 
                          mainStage.addActor(explosion);
                          score++;
@@ -373,8 +391,7 @@ if (!mouseStop){
                     if(hamveeExplode){
                          explosion_hamvee.start();  
                               
-                        Sound sound2 = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
-                        sound2.play();
+                        grenade.play();
                 
                          mainStage.addActor(explosion_hamvee);          
                     score++;
@@ -390,7 +407,7 @@ if (!mouseStop){
         
         if( score == 3){
                     if (endSound){
-                    Sound sound_morse = Gdx.audio.newSound(Gdx.files.internal("Morse.mp3")); 
+               
                         sound_morse.play();
 
                                        
@@ -404,8 +421,10 @@ if (!mouseStop){
                     }
                     
                     
+      
                     
         };
+        
         
     }
 
@@ -421,7 +440,11 @@ if (!mouseStop){
     public void hide() {
         
         
-        game.pause();
+        mainStage.dispose();
+        uiStage.dispose();
+        sound.dispose();
+
+        
         
     }
     

@@ -23,14 +23,8 @@ public class Menu implements Screen
         game = g;
         create();
     }
-    
-    public Menu(Game g, String s)
-    {       
-        
-        game = g;
-        create();
-    }
-    
+ 
+
     
     
 
@@ -39,7 +33,7 @@ public class Menu implements Screen
         uiStage  = new Stage();
 
         BaseActor background = new BaseActor();
-        background.setTexture( new Texture(Gdx.files.internal("tiles-menu.jpg")) );
+        background.setTexture( new Texture(Gdx.files.internal("intro.jpg")) );
         uiStage.addActor( background );
 
        
@@ -61,12 +55,16 @@ public class Menu implements Screen
         if (Gdx.input.isKeyPressed(Keys.SPACE)) 
            game.setScreen( new GameWp(game) );
         
-           if (Gdx.input.isKeyPressed(Keys.X)) 
+           if (Gdx.input.isKeyPressed(Keys.X)){
+            game.setScreen(this);
+           } 
             //game.setScreen( new SmokuMenu(game) );
            
-           if (Gdx.input.isKeyPressed(Keys.M)) 
-            game.setScreen( new Menu(game));
-
+           if (Gdx.input.isKeyPressed(Keys.M)) {
+            //game.setScreen( new GameWp(game,1))
+               System.out.println("1212 12 12 12 12 12");
+               game.pause();
+           }
 
            
         // update
@@ -99,4 +97,6 @@ public class Menu implements Screen
 
     @Override
     public void hide()    {  }
+
+
 }
