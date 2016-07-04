@@ -84,6 +84,9 @@ public class GameWp extends Game implements Screen
    Sound sound_morse = Gdx.audio.newSound(Gdx.files.internal("Morse.mp3"));
    Sound grenade = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
     private BaseActor sand;
+    private boolean colision;
+    private float colisionX;
+    private float colisionY;
         
    
     
@@ -250,6 +253,7 @@ if (!mouseStop){
             
   
 }
+
         // update
      
           
@@ -332,8 +336,34 @@ if (!mouseStop){
 
         ///////////////////////////
         ///////////////////////////
+                Rectangle sandRectangle = sand.getBoundingRectangle();
+               
+                if (sandRectangle.overlaps(soliderRectangle ) ){
+
+                               //if (solider.velocityX >1 ) {
+                               //  System.out.println("123123123123123123");
+                               // }
+                    
+                    if (colision == false) {
+                    colisionX = solider.getX();
+                    colisionY = solider.getY();       
+                    }
+                    
+                    colision = true ;
+                } else { colision= false ;};
+                
+                if (colision == true) {
+                    solider.setX(colisionX);
+                    solider.setY(colisionY);
+                    
+                        }
+                
+               if (solider.velocityX >1 ) {
+                   System.out.println("123123123123123123");
+               }
+                
         ///////////////////////////
-        solider.
+        ///////////////////////////
         
         
         if ( (txtVal.equalsIgnoreCase("helicopter")) && (txtSmiglo.isVisible()) ) { 
