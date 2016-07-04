@@ -353,14 +353,21 @@ if (!mouseStop){
                 } else { colision= false ;};
                 
                 if (colision == true) {
-                    solider.setX(colisionX);
-                    solider.setY(colisionY);
+               
+                    if(solider.velocityX < 1)
+                        solider.setX(colisionX+2);
+                    if(solider.velocityX > 1)
+                        solider.setX(colisionX-2);
                     
-                        }
+                     if(solider.velocityY > 1)
+                        solider.setY(colisionY-2);
+                    if(solider.velocityY < 1)
+                        solider.setY(colisionY+2);
                 
-               if (solider.velocityX >1 ) {
-                   System.out.println("123123123123123123");
-               }
+                
+                }
+                
+               
                 
         ///////////////////////////
         ///////////////////////////
