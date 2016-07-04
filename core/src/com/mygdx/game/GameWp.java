@@ -393,7 +393,11 @@ if (!mouseStop){
 
         
         
-         if ( txtVal1.equalsIgnoreCase("tank") && txtTank.isVisible()) { 
+         if (  txtTank.isVisible() && Gdx.input.isKeyPressed(Keys.ENTER)) { 
+              
+             
+             if (txtVal1.equalsIgnoreCase("tank")){
+             
                 mouseStop = false;
                 txtTank.setVisible(false);
                 tank.setVisible(false);
@@ -410,7 +414,12 @@ if (!mouseStop){
                          score++;
                     tankExplode = false;    
                     };
-                        
+                    
+                } else
+             {
+                 System.out.println("porazka");
+                 txtVal1.chars("sdfsdsd");
+             }
                 
 
                 
