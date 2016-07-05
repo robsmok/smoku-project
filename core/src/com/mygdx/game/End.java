@@ -12,12 +12,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Screen;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
 
-public class End implements Screen
+public class End extends Game implements Screen
 {
     private Stage uiStage;
     private Game game;
     private int wynik;
+    private BaseActor background;
+    
+        
             
 
     public End(Game g, int w)
@@ -35,9 +39,9 @@ public class End implements Screen
     {        
         uiStage  = new Stage();
 
-        BaseActor background = new BaseActor();
+        background = new BaseActor();
         background.setTexture( new Texture(Gdx.files.internal("moro.jpg")) );
-        uiStage.addActor( background );
+        uiStage.addActor(background);
         
         System.out.println(wynik);  
         
@@ -52,12 +56,15 @@ public class End implements Screen
 
         
         uiStage.addActor( instructions );
+
+    
     }
 
     public void render(float dt) 
     {   
         
-        
+background.addAction(Actions.fadeIn(0));
+       
 
         // process input
         if (Gdx.input.isKeyPressed(Keys.SPACE)) 
@@ -74,12 +81,13 @@ public class End implements Screen
                game.pause();
            }
 
-           
+
+         
         // update
         uiStage.act(dt);
 
         // draw graphics
-        Gdx.gl.glClearColor(0.8f, 0.8f, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         uiStage.draw();
     }
@@ -98,9 +106,7 @@ public class End implements Screen
 
     @Override
     public void show()    {  
-    
-    
-    
+   
     }
 
     @Override

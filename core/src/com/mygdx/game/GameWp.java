@@ -71,7 +71,7 @@ public class GameWp extends Game implements Screen
     private boolean endSound = true;
     
     private int score = 0;
-    private BaseActor floor2;
+
 
     public Game game;
     private float stoper;
@@ -87,6 +87,8 @@ public class GameWp extends Game implements Screen
     private float colisionY;
     private boolean laugh = true;
     private long idi_kosz;
+    
+    private int timme=0;
 
     
     public GameWp(Game g)
@@ -198,13 +200,13 @@ public class GameWp extends Game implements Screen
         mainStage.addActor(solider);
 
        
-                BitmapFont font = new BitmapFont();
-                String text = "Time: 0";
-                LabelStyle style = new LabelStyle( font, Color.NAVY );
-                timeLabel = new Label( text, style );
-                timeLabel.setFontScale(2);
-                timeLabel.setPosition(500,440); // sets bottom left (baseline) corner?
-                uiStage.addActor( timeLabel );
+        BitmapFont font = new BitmapFont();
+        String text = "Time: 0";
+        LabelStyle style = new LabelStyle( font, Color.WHITE );
+        timeLabel = new Label( text, style );
+        timeLabel.setFontScale(1);
+        timeLabel.setPosition(20,450); // sets bottom left (baseline) corner?
+        uiStage.addActor( timeLabel );
 
         
         baseExplosion = new ParticleActor();
@@ -462,8 +464,10 @@ if (!mouseStop){
          }
          
         mainStage.draw();
+        uiStage.draw();
  
-        
+    
+           
     
         // IF GAME IS END
         if( score == 3){
@@ -477,12 +481,15 @@ if (!mouseStop){
                     
                     stoper = dt + stoper;
                     if (stoper > 4) {
-                        System.out.println("123213123");
                         game.setScreen( new End(game,12345) );
                     }
                     
-           };
-        
+           }else {
+         timme++  ;       
+            };
+         
+         timeLabel.setText( "Time: " + (int)timeElapsed + timme );   
+         
    
     }
 
@@ -490,23 +497,15 @@ if (!mouseStop){
     public void show() {
     
         System.out.println("showshow showshow showshow show");
-      
     
     }
 
     @Override
     public void hide() {
         
-        
         mainStage.dispose();
         uiStage.dispose();
         sound.dispose();
-
-        
-        
-    }
-    
-    
-    
+  }
 
 }
