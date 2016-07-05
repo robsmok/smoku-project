@@ -481,7 +481,7 @@ if (!mouseStop){
                     
                     stoper = dt + stoper;
                     if (stoper > 4) {
-                        game.setScreen( new End(game,12345) );
+                        game.setScreen( new End(game, (int)timeElapsed + timme) );
                     }
                     
            }else {

@@ -19,6 +19,8 @@ public class End extends Game implements Screen
     private Stage uiStage;
     private Game game;
     private int wynik;
+    
+    private Label congratulaton;
     private BaseActor background;
     
         
@@ -44,18 +46,29 @@ public class End extends Game implements Screen
         uiStage.addActor(background);
         
         System.out.println(wynik);  
-        
        
         BitmapFont font = new BitmapFont();
-        String text = " KONIEC GRY";
-        LabelStyle style = new LabelStyle( font, Color.YELLOW );
+        String text = " KONIEC";
+        LabelStyle style = new LabelStyle( font, Color.WHITE );
         Label instructions = new Label( text, style );
         instructions.setFontScale(3);
-        instructions.setPosition(100, 50); 
-        // repeating color pulse effect
+        instructions.setPosition(100, 80); 
+
+  
+        String text1 = " Wynik GRY " + wynik;
+        congratulaton = new Label( text1, style );
+        congratulaton.setFontScale(3);
+        congratulaton.setPosition(100, 400); 
+ 
 
         
-        uiStage.addActor( instructions );
+        
+        
+        
+        
+        
+        uiStage.addActor(instructions);
+        uiStage.addActor(congratulaton);
 
     
     }
