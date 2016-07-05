@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -71,31 +70,24 @@ public class GameWp extends Game implements Screen
     
     private boolean endSound = true;
     
-    
- 
-    
     private int score = 0;
     private BaseActor floor2;
-
-
 
     public Game game;
     private float stoper;
     
-   Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sounds_of_War.mp3")); 
-   Sound sound_morse = Gdx.audio.newSound(Gdx.files.internal("Morse.mp3"));
-   Sound grenade = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
-   Music sound_laugh = Gdx.audio.newMusic(Gdx.files.internal("Laugh.mp3")); 
-   
-    
+    Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sounds_of_War.mp3")); 
+    Sound sound_morse = Gdx.audio.newSound(Gdx.files.internal("Morse.mp3"));
+    Sound grenade = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
+    Music sound_laugh = Gdx.audio.newMusic(Gdx.files.internal("Laugh.mp3")); 
+       
     private BaseActor sand;
     private boolean colision;
     private float colisionX;
     private float colisionY;
     private boolean laugh = true;
     private long idi_kosz;
-        
-   
+
     
     public GameWp(Game g)
     {
@@ -103,46 +95,38 @@ public class GameWp extends Game implements Screen
         create();
     }
 
-
-     
     
     public void create() 
     {        
         
         sound.loop(0.1f);
-   
-        
+       
         mainStage = new Stage();
         Gdx.input.setInputProcessor(mainStage);
         
         uiStage = new Stage();
         timeElapsed = 0;
-
+     
         floor = new BaseActor();
         floor.setTexture( new Texture(Gdx.files.internal("mapa600x1000.png")) );
         floor.setPosition( 0, 0 );
         mainStage.addActor( floor );
 
-
-        //sand bag
-        
+        //sand bag        
         sand = new BaseActor();
         sand.setTexture( new Texture(Gdx.files.internal("sand.png")) );
         sand.setPosition( 400, 100 );
         mainStage.addActor( sand );
 
         
-        
-        
-        
         Skin mSkin = new Skin(Gdx.files.internal("data/uiskin.json"));   
      
-     hamveeTxt = new TextField("", mSkin);
-     hamveeTxt.setSize(200, 40);
-     hamveeTxt.setPosition(350, 570);
-     hamveeTxt.setVisible(false);
+        hamveeTxt = new TextField("", mSkin);
+        hamveeTxt.setSize(200, 40);
+        hamveeTxt.setPosition(350, 570);
+        hamveeTxt.setVisible(false);
   
-     hamveeTxt.setTextFieldListener(new TextFieldListener() {
+        hamveeTxt.setTextFieldListener(new TextFieldListener() {
       
        @Override
             public void keyTyped(TextField textField, char key) {
@@ -257,29 +241,32 @@ if (!mouseStop){
                     
         if (Gdx.input.isKeyPressed(Keys.ESCAPE)) 
             game.setScreen( new Menu(game) );
+        
+         if (Gdx.input.isKeyPressed(Keys.Q)) 
+            game.setScreen( new End(game,12345) );
             
   
 }
 
-        // update
-     
+
+ 
+// update
           
             mainStage.act(dt);
             uiStage.act(dt);
-   
  
 		// bound solider to the rectangle defined by mapWidth, mapHeight
         solider.setX( MathUtils.clamp( solider.getX(), 0,  mapWidth - solider.getWidth() ));
         solider.setY( MathUtils.clamp( solider.getY(), 0,  mapHeight - solider.getHeight() ));
 
+
         // check win condition: solider must be overlapping smiglo
         Rectangle smigloRectangle = smiglo.getBoundingRectangle();
         Rectangle tankRectangle = tank.getBoundingRectangle();
         Rectangle hamveeRectangle = hamvee.getBoundingRectangle();
+        Rectangle soliderRectangle = solider.getBoundingRectangle();
      
     
-        Rectangle soliderRectangle = solider.getBoundingRectangle();
-
         if(heliExplode){ //if helicopter not expolode
             
         if (smigloRectangle.overlaps(soliderRectangle ) )
@@ -302,7 +289,6 @@ if (!mouseStop){
             txtTank.setVisible(true);
             mainStage.setKeyboardFocus(txtTank);
             
-            
             mouseStop = true;}
     }
  
@@ -312,21 +298,18 @@ if (!mouseStop){
         if (hamveeRectangle.overlaps(soliderRectangle ) )
         {
                  
-            
             hamvee.addAction(fadeIn((float) 0.8));          
             hamveeTxt.setVisible(true);
             mainStage.setKeyboardFocus(hamveeTxt);
-        
-            
+          
             mouseStop = true;}
             
         }
         
-        
-
+  
 
         // draw graphics
-        Gdx.gl.glClearColor(0.8f, 0.8f, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // camera adjustment
@@ -344,13 +327,9 @@ if (!mouseStop){
         ///////////////////////////
         ///////////////////////////
                 Rectangle sandRectangle = sand.getBoundingRectangle();
-               
+  
                 if (sandRectangle.overlaps(soliderRectangle ) ){
 
-                               //if (solider.velocityX >1 ) {
-                               //  System.out.println("123123123123123123");
-                               // }
-                    
                     if (colision == false) {
                     colisionX = solider.getX();
                     colisionY = solider.getY();       
@@ -370,7 +349,6 @@ if (!mouseStop){
                         solider.setY(colisionY-2);
                     if(solider.velocityY < 1)
                         solider.setY(colisionY+2);
-                
                 
                 }
                 
@@ -486,25 +464,24 @@ if (!mouseStop){
         mainStage.draw();
  
         
+    
+        // IF GAME IS END
         if( score == 3){
                     if (endSound){
-               
                         sound_morse.play();
-
-                                       
-                        
                     }
                     endSound = false;
-                    stoper = dt + stoper;
                     
-                    if (stoper > 3) {
-                   
+                    floor.addAction(fadeOut(5));
+                    
+                    
+                    stoper = dt + stoper;
+                    if (stoper > 4) {
+                        System.out.println("123213123");
+                        game.setScreen( new End(game,12345) );
                     }
                     
-                    
-      
-                    
-        };
+           };
         
    
     }
