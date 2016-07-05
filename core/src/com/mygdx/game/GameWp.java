@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -57,6 +58,7 @@ public class GameWp extends Game implements Screen
     private BaseActor hamvee;
     private TextField hamveeTxt;
     private String txtHamvee = "a";
+    
     private long id;
     private ParticleEffect pe;
     private SpriteBatch batch;
@@ -83,10 +85,15 @@ public class GameWp extends Game implements Screen
    Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sounds_of_War.mp3")); 
    Sound sound_morse = Gdx.audio.newSound(Gdx.files.internal("Morse.mp3"));
    Sound grenade = Gdx.audio.newSound(Gdx.files.internal("grenade.mp3")); 
+   Music sound_laugh = Gdx.audio.newMusic(Gdx.files.internal("Laugh.mp3")); 
+   
+    
     private BaseActor sand;
     private boolean colision;
     private float colisionX;
     private float colisionY;
+    private boolean laugh = true;
+    private long idi_kosz;
         
    
     
@@ -103,6 +110,7 @@ public class GameWp extends Game implements Screen
     {        
         
         sound.loop(0.1f);
+   
         
         mainStage = new Stage();
         Gdx.input.setInputProcessor(mainStage);
@@ -233,8 +241,7 @@ public class GameWp extends Game implements Screen
  
 
       
-
-// process input
+ 
         solider.velocityX = 0;
         solider.velocityY = 0;
 
@@ -260,7 +267,7 @@ if (!mouseStop){
             mainStage.act(dt);
             uiStage.act(dt);
    
-
+ 
 		// bound solider to the rectangle defined by mapWidth, mapHeight
         solider.setX( MathUtils.clamp( solider.getX(), 0,  mapWidth - solider.getWidth() ));
         solider.setY( MathUtils.clamp( solider.getY(), 0,  mapHeight - solider.getHeight() ));
@@ -372,9 +379,12 @@ if (!mouseStop){
         ///////////////////////////
         ///////////////////////////
         
-        
-        if ( (txtVal.equalsIgnoreCase("helicopter")) && (txtSmiglo.isVisible()) ) { 
-                mouseStop = false;
+  
+        if ( (txtSmiglo.isVisible()) && Gdx.input.isKeyPressed(Keys.ENTER) ) { 
+             
+            if((txtVal.equalsIgnoreCase("helicopter"))){
+            
+               mouseStop = false;
                 txtSmiglo.setVisible(false);
                 smiglo.setVisible(false);
                
@@ -389,13 +399,24 @@ if (!mouseStop){
                         score++;
                      heliExplode = false;    
                     };
+                    }//if((txtVal.equalsIgnoreCase("helicopter"))){
+
+                         else {
+                txtSmiglo.setText("");
+
+                if ( !(sound_laugh.isPlaying())){
+                    sound_laugh.play();                       
+                }
+             }
+            
+            
                 }
 
         
         
+      
          if (  txtTank.isVisible() && Gdx.input.isKeyPressed(Keys.ENTER)) { 
               
-             
              if (txtVal1.equalsIgnoreCase("tank")){
              
                 mouseStop = false;
@@ -410,23 +431,28 @@ if (!mouseStop){
                         explosion.start();  
                         grenade.play();
                 
-                         mainStage.addActor(explosion);
-                         score++;
-                    tankExplode = false;    
-                    };
+                        mainStage.addActor(explosion);
+                        score++;
+                        tankExplode = false;    
+                    }
                     
-                } else
-             {
-                 System.out.println("porazka");
-                 txtVal1.chars("sdfsdsd");
+                }
+             else {
+                txtTank.setText("");
+
+                if ( !(sound_laugh.isPlaying())){
+                    sound_laugh.play();                       
+                }
              }
                 
-
-                
-                
-                }
+            }
          
-         if ( txtHamvee.equalsIgnoreCase("hamvee") && hamveeTxt.isVisible()) { 
+         
+
+         if (   hamveeTxt.isVisible() && Gdx.input.isKeyPressed(Keys.ENTER)) { 
+
+             if (txtHamvee.equalsIgnoreCase("hamvee")){ 
+             
                 mouseStop = false;
                 hamveeTxt.setVisible(false);
                 hamvee.setVisible(false);
@@ -444,12 +470,21 @@ if (!mouseStop){
                     hamveeExplode = false;    
  
                     }
-         
+             }//if (txtHamvee.equalsIgnoreCase("hamvee")){ 
+             else {
+                hamveeTxt.setText("");
+
+                if ( !(sound_laugh.isPlaying())){
+                    sound_laugh.play();                       
+                }
+             }             
+             
+             
+             
          }
          
         mainStage.draw();
  
-        System.out.println(score);
         
         if( score == 3){
                     if (endSound){
@@ -471,7 +506,7 @@ if (!mouseStop){
                     
         };
         
-        
+   
     }
 
     @Override
