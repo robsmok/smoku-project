@@ -13,12 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class End extends Game implements Screen
 {
@@ -29,7 +26,11 @@ public class End extends Game implements Screen
     private Label congratulaton;
     private BaseActor background;
     private Map<Integer, String> myMap;
-    
+    int scorE;
+    int a=0;    //loop
+    int b=0;    //loop
+    private String wyjscie="";
+    private TextField nick;
             
 
     public End(Game g, int w)
@@ -47,50 +48,46 @@ public class End extends Game implements Screen
 
         ///////////////////////
         //file serv
-
     
         FileHandle file = Gdx.files.internal("score.txt");
         String fileScore = file.readString();
+        String fileScore_end = fileScore;
+        
+        fileScore = fileScore.replace("\n", "").replace("\r", "");
+        
+        
+        System.out.println(fileScore);
         
         String[] tokens = fileScore.split(";");
 
-        myMap = new HashMap();
-        for (String t : tokens)
-        {
-           String[] tok = t.split("::");
+        for (int i = 0; i < 5; i++) {
+            
+           String[] tok = tokens[i].split("::");
             
            String mystr = tok[0].replaceAll( "[^\\d]", "" );
            int number= Integer.parseInt(mystr);
-            
-           myMap.put(number, tok[1]);
+        
+           if (wynik <= number){
+               if( (!(a>0)))
+                   wyjscie = wyjscie + wynik +":: <-TWÓJ WYNIK->;\n"; 
+                   add_score = true;
+               a++;
+               }
+           
+           wyjscie = wyjscie +tok[0]+"::"+tok[1]+";\n";
         }
         
-       List keys = new ArrayList(myMap.keySet());
-       Collections.sort(keys);
+        System.out.println("------i-------");
+        System.out.println(wyjscie);       
+        System.out.println("------i-------");
        
-        System.out.println(keys.size()+ "--------------");
- 
-	// Loop over String keys.
-	for (Object key : keys) {
-	    System.out.println(key + myMap.get(key));
- 	}
-        
-        System.out.println(keys.size()+ "--------------");
-        System.out.println(keys.size()+ "--------------");
- 
         
         
+        FileHandle file2 = Gdx.files.local("score.txt");
+        file2.writeString(wyjscie, false);
         
         
-        Map<String, String> yourMap = new HashMap<String, String>();
-        yourMap.put("1", "one");
-        yourMap.put("1", "onesdf");
-        yourMap.put("2", "two");
-        yourMap.put("3", "three");
-        
-        Map<String, String> sortedMap = new TreeMap<String, String>(yourMap);
-        System.out.println(sortedMap);
- 
+       
         //file serv
         ///////////////////////
         
@@ -98,9 +95,10 @@ public class End extends Game implements Screen
         
         background = new BaseActor();
         background.setTexture( new Texture(Gdx.files.internal("moro.jpg")) );
-        uiStage.addActor(background);
         
-        System.out.println(wynik);  
+        uiStage.addActor(background);
+        Gdx.input.setInputProcessor(uiStage);
+        
        
         BitmapFont font = new BitmapFont();
         String text = " KONIEC";
@@ -109,10 +107,21 @@ public class End extends Game implements Screen
         instructions.setFontScale(3);
         instructions.setPosition(100, 80); 
 
+        Skin mSkin = new Skin(Gdx.files.internal("data/uiskin.json"));   
+     
+        nick = new TextField("", mSkin);
+        nick.setSize(200, 40);
+        nick.setPosition(100, 100);
+        nick.setVisible(false);
+        uiStage.addActor(nick);  
         
-        Label tableScore = new Label( fileScore, style );
+        
+        Label tableScore = new Label( wyjscie, style );
         tableScore.setFontScale(2);
-        tableScore.setPosition(150, 210); 
+        tableScore.setPosition(150, 180);
+        
+        
+        
 
         
         String text1 = " Wynik GRY " + wynik;
@@ -131,7 +140,7 @@ public class End extends Game implements Screen
     public void render(float dt) 
     {   
         
-background.addAction(Actions.fadeIn(0));
+        background.addAction(Actions.fadeIn(0));
        
 
         // process input
@@ -145,10 +154,20 @@ background.addAction(Actions.fadeIn(0));
            
            if (Gdx.input.isKeyPressed(Keys.M)) {
             //game.setScreen( new GameWp(game,1))
-
                game.pause();
            }
 
+           
+        
+           if(a>1){    
+                nick.setVisible(true);
+                uiStage.setKeyboardFocus(nick);
+           
+           }
+               
+               
+           
+           
 
          
         // update
@@ -158,16 +177,6 @@ background.addAction(Actions.fadeIn(0));
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         uiStage.draw();
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
     }
 
@@ -193,3 +202,8 @@ background.addAction(Actions.fadeIn(0));
 
 
 }
+
+
+
+
+

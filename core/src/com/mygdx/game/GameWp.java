@@ -496,7 +496,6 @@ if (!mouseStop){
     @Override
     public void show() {
     
-        System.out.println("showshow showshow showshow show");
     
     }
 

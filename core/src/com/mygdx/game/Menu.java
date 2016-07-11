@@ -34,6 +34,8 @@ public class Menu implements Screen
 
         BaseActor background = new BaseActor();
         background.setTexture( new Texture(Gdx.files.internal("intro.jpg")) );
+        background.setSize(600, 400);
+        background.setPosition(0, 50);
         uiStage.addActor( background );
 
        
@@ -71,7 +73,7 @@ public class Menu implements Screen
         uiStage.act(dt);
 
         // draw graphics
-        Gdx.gl.glClearColor(0.8f, 0.8f, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         uiStage.draw();
     }

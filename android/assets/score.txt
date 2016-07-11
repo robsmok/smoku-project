@@ -1,6 +1,5 @@
-12234::ella;
-23546::juzek;
-23899::antek;
-2389::michal;
-24123::krzy;
-24123::krzy2;
+1762:: <-TWÓJ WYNIK->;1
+769:: <-TWÓJ WYNIK->;
+1835:: <-TWÓJ WYNIK->;1
+897:: <-TWÓJ WYNIK->;
+1908:: <-TWÓJ WYNIK->;
