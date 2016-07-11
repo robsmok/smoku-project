@@ -216,17 +216,11 @@ public class GameWp extends Game implements Screen
         mainStage.addActor(txtTank);
         mainStage.addActor(hamveeTxt);      
 
-
     }
-
-
-   
     
     public void render(float dt) 
-    {   
- 
 
-      
+    {   
  
         solider.velocityX = 0;
         solider.velocityY = 0;

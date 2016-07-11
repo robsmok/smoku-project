@@ -15,6 +15,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import java.util.Map;
 
 public class End extends Game implements Screen
@@ -31,6 +32,10 @@ public class End extends Game implements Screen
     int b=0;    //loop
     private String wyjscie="";
     private TextField nick;
+    private String txtNick;
+    
+    private Label tableScore;
+    private boolean add_score;
             
 
     public End(Game g, int w)
@@ -54,8 +59,6 @@ public class End extends Game implements Screen
         String fileScore_end = fileScore;
         
         fileScore = fileScore.replace("\n", "").replace("\r", "");
-        
-        
         System.out.println(fileScore);
         
         String[] tokens = fileScore.split(";");
@@ -69,7 +72,7 @@ public class End extends Game implements Screen
         
            if (wynik <= number){
                if( (!(a>0)))
-                   wyjscie = wyjscie + wynik +":: <-TWÓJ WYNIK->;\n"; 
+                   wyjscie = wyjscie + wynik +":: <-!!--!!->;\n"; 
                    add_score = true;
                a++;
                }
@@ -80,17 +83,13 @@ public class End extends Game implements Screen
         System.out.println("------i-------");
         System.out.println(wyjscie);       
         System.out.println("------i-------");
-       
-        
         
         FileHandle file2 = Gdx.files.local("score.txt");
         file2.writeString(wyjscie, false);
         
-        
        
         //file serv
         ///////////////////////
-        
         
         
         background = new BaseActor();
@@ -99,7 +98,6 @@ public class End extends Game implements Screen
         uiStage.addActor(background);
         Gdx.input.setInputProcessor(uiStage);
         
-       
         BitmapFont font = new BitmapFont();
         String text = " KONIEC";
         LabelStyle style = new LabelStyle( font, Color.WHITE );
@@ -111,32 +109,35 @@ public class End extends Game implements Screen
      
         nick = new TextField("", mSkin);
         nick.setSize(200, 40);
-        nick.setPosition(100, 100);
-        nick.setVisible(false);
+        nick.setPosition(100, 200);
+        nick.setVisible(false);        
         uiStage.addActor(nick);  
         
+       nick.setTextFieldListener(new TextFieldListener() {
+            
+       @Override
+            public void keyTyped(TextField textField, char key) {
+                    txtNick= textField.getText();
+            }
+        });
         
-        Label tableScore = new Label( wyjscie, style );
+        
+        
+        tableScore = new Label( wyjscie, style );
         tableScore.setFontScale(2);
         tableScore.setPosition(150, 180);
-        
-        
-        
-
+        tableScore.setVisible(false);
         
         String text1 = " Wynik GRY " + wynik;
         congratulaton = new Label( text1, style );
         congratulaton.setFontScale(3);
         congratulaton.setPosition(100, 400); 
- 
     
         uiStage.addActor(tableScore);
         uiStage.addActor(instructions);
         uiStage.addActor(congratulaton);
-
     
     }
-
     public void render(float dt) 
     {   
         
@@ -145,27 +146,45 @@ public class End extends Game implements Screen
 
         // process input
         if (Gdx.input.isKeyPressed(Keys.SPACE)) 
+          Gdx.app.exit();;
+        
+        if (Gdx.input.isKeyPressed(Keys.SPACE)) 
            game.setScreen( new GameWp(game) );
         
-           if (Gdx.input.isKeyPressed(Keys.X)){
-            game.setScreen(this);
+        
+           if (Gdx.input.isKeyPressed(Keys.ENTER)){
+            
+           /////////////////
+           /////////////////
+               if(add_score){
+               FileHandle file2 = Gdx.files.local("score.txt");
+               
+               String wyjscie2 = wyjscie.replace("<-!!--!!->", txtNick);           
+               file2.writeString(wyjscie2, false);
+               
+               String abc = file2.readString();
+               tableScore.setText(abc);
+               
+               System.out.println(wyjscie2);
+               nick.setVisible(false);
+               add_score=false;
+               }
+           /////////////////
+           /////////////////           
            } 
             //game.setScreen( new SmokuMenu(game) );
-           
-           if (Gdx.input.isKeyPressed(Keys.M)) {
-            //game.setScreen( new GameWp(game,1))
-               game.pause();
-           }
-
+   
            
         
-           if(a>1){    
+           if(add_score){    
                 nick.setVisible(true);
                 uiStage.setKeyboardFocus(nick);
            
-           }
+           }else
+                   
+               tableScore.setVisible(true);
                
-               
+          System.out.println(txtNick);     
            
            
 
@@ -193,9 +212,7 @@ public class End extends Game implements Screen
     public void dispose() {  }
 
     @Override
-    public void show()    {  
-   
-    }
+    public void show()    {  }
 
     @Override
     public void hide()    {  }
