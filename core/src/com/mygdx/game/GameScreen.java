@@ -510,8 +510,6 @@ public class GameScreen extends  BaseScreen
             game.setScreen( new GameEnd(game, score)); 
             
 
-        
-        
         if (keycode == Keys.SPACE)    
         { player.setVelocityXY(0,300);
            magnetofon.play("jump");} 
